@@ -27,6 +27,7 @@ export default async function generateClass(
     overwrite: true,
   });
 
+  model.fields = model.fields.filter(field=>!field.relationName)
   const validatorImports = [
     ...new Set(
       model.fields
@@ -40,16 +41,16 @@ export default async function generateClass(
   }
 
   generateClassValidatorImport(sourceFile, validatorImports as Array<string>);
-  const relationImports = new Set();
-  model.fields.forEach((field) => {
-    if (field.relationName && model.name !== field.type) {
-      relationImports.add(field.type);
-    }
-  });
+  // const relationImports = new Set();
+  // model.fields.forEach((field) => {
+  //   if (field.relationName && model.name !== field.type) {
+  //     relationImports.add(field.type);
+  //   }
+  // });
 
-  generateRelationImportsImport(sourceFile, [
-    ...relationImports,
-  ] as Array<string>);
+  // generateRelationImportsImport(sourceFile, [
+  //   ...relationImports,
+  // ] as Array<string>);
 
   if (shouldImportHelpers(model.fields)) {
     generateHelpersImports(sourceFile, ['getEnumValues']);
